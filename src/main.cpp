@@ -16,7 +16,7 @@
 #define BEEP_PIN 10
 #define MAX_STANDBY 60
 
-int pot_pos = 100, power = 50, standby_count = 0;
+int pot_pos = 100, power = 10, standby_count = 0;
 
 LiquidCrystal lcd(5, 4, 9, 8, 7, 6);
 
@@ -31,6 +31,8 @@ uint8_t full_mid[8] = {0x1F,0x0,0x1F,0x1F,0x1F,0x1F,0x0,0x1F};
 int buttons[5] = {10, 150, 300, 500, 700};
 
 void beep(int, int);
+void setPot(int);
+bool selfTest();
 
 void initLCD() {
   lcd.begin(16,2);
@@ -41,15 +43,51 @@ void initLCD() {
   lcd.createChar(5, light);
   lcd.createChar(6, shine);
 
-  lcd.home();
-
-  lcd.print("-- Self Test --");
-  lcd.setCursor(0, 1);
-  lcd.print("TODO");
-
-  delay(1000);
+  if (selfTest()) {
+    lcd.setCursor(0, 1);
+    lcd.print("                ");
+    lcd.setCursor(0, 1);
+    lcd.print("Test passed!");
+  } else {
+    setPot(-100);
+    lcd.print("FAIL!");
+    while (true);
+  }
 }
 
+bool selfTest() {
+  lcd.home();
+  lcd.print("# Self Test: 0%");
+  lcd.setCursor(0, 1);
+  setPot(0-pot_pos);
+  for (uint8_t i = 0; i < 3; i++) {
+    delay(200);
+    float outV = analogRead(VOUT)/1023.0*VIN_MAX;
+    float outA = analogRead(AOUT)/1023.0*AOUT_MAX;
+    lcd.print(String(outV, 1)+" ");
+    if (outV < 3.0 || outV > 7.0 || outA > 0.01) return false;
+  }
+  lcd.print("OK!");
+  delay(200);
+
+  lcd.setCursor(13, 0);
+  lcd.print("50%");
+  lcd.setCursor(0, 1);
+  lcd.print("                ");
+  lcd.setCursor(0, 1);
+  setPot(50-pot_pos);
+  for (uint8_t i = 0; i < 3; i++) {
+    delay(200);
+    float outV = analogRead(VOUT)/1023.0*VIN_MAX;
+    float outA = analogRead(AOUT)/1023.0*AOUT_MAX;
+    lcd.print(String(outV, 1)+" ");
+    if (outA < 0.35 || outA > 0.55 || outV < 9.0 || outV > 11.0) return false;
+  }
+  lcd.print("OK!");
+  delay(200);
+
+  return true;
+}
 
 void setPot(int change) {
   digitalWrite(CS_PIN, 0);
@@ -151,6 +189,8 @@ void setup() {
   digitalWrite(BEEP_PIN, 0);
   pinMode(BEEP_PIN, OUTPUT);
   pinMode(VIN, INPUT);
+  pinMode(VOUT, INPUT);
+  pinMode(AOUT, INPUT);
   pinMode(BTN, INPUT);
 
   initPot();
@@ -158,7 +198,7 @@ void setup() {
   beep(200, 2);
 }
 
-void updateLcd(float batV, float charge) {
+void updateLcd(float batV, float charge, float watt) {
   lcd.clear();
   lcd.print(String(batV, 1) + "V");
   lcd.setCursor(5, 0);
@@ -182,8 +222,7 @@ void updateLcd(float batV, float charge) {
     }
   }
   lcd.print(pot_pos);
-  //lcd.print(" %  S:");
-  //lcd.print(standby_count/2);
+  lcd.print("% " +String(watt, 1) + "W");
 }
 
 void loop() {
@@ -202,9 +241,7 @@ void loop() {
 
     checkStandby();
 
-    updateLcd(batV, charge);
-    lcd.print("% ");
-    lcd.print(outA*outV);
+    updateLcd(batV, charge, outA*outV);
 
     //lcd.print(String(pot*100, 0) + "% " + String(pot*10, 1) + "W");
     delay(500);
