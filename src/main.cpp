@@ -5,13 +5,15 @@
 #define VIN A1
 #define VOUT A3
 #define AOUT A0
+#define AOUT_MAX 12.8205
 #define BTN A2
 #define VIN_MAX 20.957
 #define LI_cell 3.0
 #define LI_minV 3.5
 #define INC_PIN 12
-#define UP_PIN 13
-#define BEEP_PIN 1
+#define UP_PIN 11
+#define CS_PIN 13
+#define BEEP_PIN 10
 #define MAX_STANDBY 60
 
 int pot_pos = 100, power = 50, standby_count = 0;
@@ -50,6 +52,9 @@ void initLCD() {
 
 
 void setPot(int change) {
+  digitalWrite(CS_PIN, 0);
+  delay(1);
+
   if (change > 0) {
     digitalWrite(UP_PIN, 1);
   } else {
@@ -65,9 +70,12 @@ void setPot(int change) {
     delay(1);
   }
   pot_pos += change;
+  digitalWrite(CS_PIN, 1);
 }
 
 void initPot() {
+  pinMode(CS_PIN, OUTPUT);
+  digitalWrite(CS_PIN, 1);
   pinMode(INC_PIN, OUTPUT);
   digitalWrite(INC_PIN, 1);
   pinMode(UP_PIN, OUTPUT);
@@ -174,13 +182,15 @@ void updateLcd(float batV, float charge) {
     }
   }
   lcd.print(pot_pos);
-  lcd.print(" %  S:");
-  lcd.print(standby_count/2);
+  //lcd.print(" %  S:");
+  //lcd.print(standby_count/2);
 }
 
 void loop() {
     readButtons();
     float batV = analogRead(VIN)/1023.0*VIN_MAX;
+    float outV = analogRead(VOUT)/1023.0*VIN_MAX;
+    float outA = analogRead(AOUT)/1023.0*AOUT_MAX;
     float cellV = batV/LI_cell;
     float charge = (cellV-LI_minV)/(4.2-LI_minV);
     if (charge <= 0.0) {
@@ -193,6 +203,8 @@ void loop() {
     checkStandby();
 
     updateLcd(batV, charge);
+    lcd.print("% ");
+    lcd.print(outA*outV);
 
     //lcd.print(String(pot*100, 0) + "% " + String(pot*10, 1) + "W");
     delay(500);
