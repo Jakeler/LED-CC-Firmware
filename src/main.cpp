@@ -70,7 +70,7 @@ void setPot(int change) {
     delay(1);
   }
   pot_pos += change;
-  digitalWrite(CS_PIN, 1);
+  digitalWrite(CS_PIN, 0);
 }
 
 void initPot() {
