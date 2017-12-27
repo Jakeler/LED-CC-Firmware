@@ -47,7 +47,7 @@ void initLCD() {
     lcd.setCursor(0, 1);
     lcd.print("                ");
     lcd.setCursor(0, 1);
-    lcd.print("Test passed!");
+    lcd.print("PASSED!");
   } else {
     setPot(-100);
     lcd.print("FAIL!");
@@ -90,6 +90,7 @@ bool selfTest() {
 }
 
 void setPot(int change) {
+  digitalWrite(INC_PIN, 1);
   digitalWrite(CS_PIN, 0);
   delay(1);
 
@@ -102,13 +103,14 @@ void setPot(int change) {
   int change_abs = abs(change);
   digitalWrite(INC_PIN, 1);
   for (int i = 0; i < change_abs; i++) {
-    digitalWrite(INC_PIN, 1);
-    delay(1);
     digitalWrite(INC_PIN, 0);
+    delay(1);
+    digitalWrite(INC_PIN, 1);
     delay(1);
   }
   pot_pos += change;
-  digitalWrite(CS_PIN, 0);
+
+  digitalWrite(CS_PIN, 1);
 }
 
 void initPot() {
