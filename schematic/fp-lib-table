@@ -1,0 +1,6 @@
+(fp_lib_table
+  (lib (name X9C103P)(type Legacy)(uri "$(KIPRJMOD)/X9C103P/X9C103P.mod")(options "")(descr ""))
+  (lib (name DEV-11114)(type Legacy)(uri "$(KIPRJMOD)/ProMini/DEV-11114.mod")(options "")(descr ""))
+  (lib (name DC-DC)(type KiCad)(uri "$(KIPRJMOD)/DC-DC.pretty")(options "")(descr ""))
+  (lib (name Logos)(type KiCad)(uri "$(KIPRJMOD)/Logos")(options "")(descr ""))
+)

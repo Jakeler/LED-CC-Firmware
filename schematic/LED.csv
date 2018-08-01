@@ -1,0 +1,17 @@
+"ID";"Bezeichner";"Gehäuse";"Stückzahl";"Bezeichnung";"Anbieter und Ref.";
+1;"R2";"R_Axial_Shunt_L22.2mm_W9.5mm_PS14.30mm_P25.40mm";1;"0.39";;;
+2;"BT1";"WireConnection_2.00mmDrill";1;"3-4S LiPo";;;
+3;"BZ1";"Buzzer_12x9.5RM7.6";1;"Buzzer";;;
+4;"D1";"WireConnection_2.00mmDrill";1;"LED";;;
+5;"DC1";"ChinaLM2596S-Module";1;"DC-DC";;;
+6;"IC1";"DIP254P762X533-8";1;"X9C103P";;;
+7;"J1";"Socket_Strip_Straight_1x04_Pitch2.54mm";1;"Conn_01x04";;;
+8;"J2";"Socket_Strip_Straight_1x03_Pitch2.54mm";1;"Conn_01x03";;;
+9;"J3";"Socket_Strip_Straight_1x08_Pitch2.54mm";1;"Conn_01x06";;;
+10;"R1";"R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal";1;"20K";;;
+11;"R3,R5";"R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal";2;"15K";;;
+12;"R4,R6";"R_Axial_DIN0207_L6.3mm_D2.5mm_P10.16mm_Horizontal";2;"4.7K";;;
+13;"U1";"DIP-8_W7.62mm";1;"LM358";;;
+14;"U2";"TO-252-2";1;"MC78M05_TO252";;;
+15;"IC2";"ProMini";1;"Pro Mini";;;
+16;"S,G,+5";"Measurement_Point_Square-SMD-Pad_Small";3;"";;;

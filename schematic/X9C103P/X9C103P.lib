@@ -1,0 +1,28 @@
+EESchema-LIBRARY Version 2.3
+#encoding utf-8
+#
+# X9C103P
+#
+DEF X9C103P IC 0 30 Y Y 1 F N
+F0 "IC" 550 150 50 H V C CNN
+F1 "X9C103P" 550 -450 50 H V C CNN
+F2 "DIP254P762X533-8" 550 -550 50 H I C CNN
+F3 "" 550 -650 50 H I C CNN
+F4 "Digitally Controlled Potentiometer" 550 -750 50 H I C CNN "Description"
+F5 "RS" 550 -850 50 H I C CNN "Supplier_Name"
+F6 "Intersil" 550 -1050 50 H I C CNN "Manufacturer_Name"
+F7 "X9C103P" 550 -1150 50 H I C CNN "Manufacturer_Part_Number"
+DRAW
+S 200 100 900 -400 0 0 10 f
+X ~INC 1 0 0 200 R 50 50 0 0 I
+X U/~D 2 0 -100 200 R 50 50 0 0 I
+X VH/RH 3 0 -200 200 R 50 50 0 0 P
+X VSS 4 0 -300 200 R 50 50 0 0 W
+X VW/RW 5 1100 -300 200 L 50 50 0 0 P
+X VL/RL 6 1100 -200 200 L 50 50 0 0 P
+X ~CS 7 1100 -100 200 L 50 50 0 0 I
+X VCC 8 1100 0 200 L 50 50 0 0 W
+ENDDRAW
+ENDDEF
+#
+#End Library
