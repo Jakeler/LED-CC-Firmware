@@ -43,16 +43,16 @@ void initLCD() {
   lcd.createChar(5, light);
   lcd.createChar(6, shine);
 
-  if (selfTest()) {
-    lcd.setCursor(0, 1);
-    lcd.print("                ");
-    lcd.setCursor(0, 1);
-    lcd.print("PASSED!");
-  } else {
-    setPot(-100);
-    lcd.print("FAIL!");
-    while (true);
-  }
+  // if (selfTest()) {
+  //   lcd.setCursor(0, 1);
+  //   lcd.print("                ");
+  //   lcd.setCursor(0, 1);
+  //   lcd.print("PASSED!");
+  // } else {
+  //   setPot(-100);
+  //   lcd.print("FAIL!");
+  //   while (true);
+  // }
 }
 
 bool selfTest() {
