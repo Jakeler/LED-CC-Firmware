@@ -98,13 +98,14 @@ void updateLcd() {
   float batV = analogRead(VIN_PIN)/1023.0*VIN_MAX;
   float outV = analogRead(VOUT_PIN)/1023.0*VIN_MAX;
   float outA = analogRead(AOUT_PIN)/1023.0*AOUT_MAX;
+
   char state = powered? '=' : ' ';
   lcd.print(String(outV, 1) + "/" + String(batV, 1) + "V ");
-  lcd.print(state + String(targetPower) + "W");
+  lcd.print(state + String(targetPower) + "%");
 
+  float outW = outV * outA;
   lcd.setCursor(0, 1);
-  lcd.print(outA);
-  lcd.print("A  ");
+  lcd.print(String(outA, 2) + "A  " + String(outW, 1) + "W ");
 }
 
 void setup() {
