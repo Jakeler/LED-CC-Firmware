@@ -16,13 +16,13 @@
 #define BEEP_PIN 10
 
 
-int pot_pos = 100, targetPower = 0;
+int potiPos = 100, targetPower = 0;
 bool powered = false;
 
 LiquidCrystal lcd(5, 4, 9, 8, 7, 6);
 
 void setPoti(int target) {
-  int change = target - pot_pos;
+  int change = target - potiPos;
 
   digitalWrite(INC_PIN, 1);
   digitalWrite(CS_PIN, 0);
@@ -42,7 +42,7 @@ void setPoti(int target) {
     digitalWrite(INC_PIN, 1);
     delay(1);
   }
-  pot_pos += change;
+  potiPos += change;
 
   digitalWrite(CS_PIN, 1);
 }
