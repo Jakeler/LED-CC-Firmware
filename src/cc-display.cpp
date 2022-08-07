@@ -16,7 +16,8 @@
 #define BEEP_PIN 10
 
 
-int pot_pos = 100;
+int pot_pos = 100, targetPower = 0;
+bool powered = false;
 
 LiquidCrystal lcd(5, 4, 9, 8, 7, 6);
 
@@ -42,8 +43,6 @@ void setPoti(int target) {
     delay(1);
   }
   pot_pos += change;
-  if (pot_pos > 100) pot_pos = 100;
-  if (pot_pos < 0) pot_pos = 0;
 
   digitalWrite(CS_PIN, 1);
 }
@@ -60,11 +59,15 @@ void initPoti() {
 
 void readButtons() {
   auto handleUP = []() {
-    setPoti(pot_pos+2);
+    targetPower += 2;
+    if (targetPower > 100) targetPower = 100;
+    setPoti(powered? targetPower : 0);
     lcd.print("UP");
   };
   auto handleDOWN = []() {
-    setPoti(pot_pos-2);
+    targetPower -= 2;
+    if (targetPower < 0) targetPower = 0;
+    setPoti(powered? targetPower : 0);
     lcd.print("DOWN");
   };
   auto handleRIGHT = []() {
@@ -74,7 +77,9 @@ void readButtons() {
     lcd.print("LEFT");
   };
   auto handleSELECT = []() {
-    lcd.print("SELECT");
+    powered = !powered;
+    setPoti(powered? targetPower : 0);
+    lcd.print("SLT");
   };
 
   uint16_t value = analogRead(BTN_PIN);
@@ -93,16 +98,13 @@ void updateLcd() {
   float batV = analogRead(VIN_PIN)/1023.0*VIN_MAX;
   float outV = analogRead(VOUT_PIN)/1023.0*VIN_MAX;
   float outA = analogRead(AOUT_PIN)/1023.0*AOUT_MAX;
-  lcd.print(outV);
-  lcd.print("/");
-  lcd.print(batV);
-  lcd.print("V");
+  char state = powered? '=' : ' ';
+  lcd.print(String(outV, 1) + "/" + String(batV, 1) + "V ");
+  lcd.print(state + String(targetPower) + "W");
 
   lcd.setCursor(0, 1);
   lcd.print(outA);
   lcd.print("A  ");
-  lcd.print(pot_pos);
-  lcd.print("/100");
 }
 
 void setup() {
