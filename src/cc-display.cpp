@@ -7,23 +7,16 @@
 #define BTN_PIN A2
 #define BEEP_PIN 10
 
-int targetPower = 0;
-bool powered = false;
-
 LiquidCrystal lcd(5, 4, 9, 8, 7, 6);
 ConstantCurrent cc;
 
 void readButtons() {
   auto handleUP = []() {
-    targetPower += 2;
-    if (targetPower > 100) targetPower = 100;
-    cc.setPercent(powered? targetPower : 0);
+    cc.changeTargetPercent(+2);
     lcd.print("UP");
   };
   auto handleDOWN = []() {
-    targetPower -= 2;
-    if (targetPower < 0) targetPower = 0;
-    cc.setPercent(powered? targetPower : 0);
+    cc.changeTargetPercent(-2);
     lcd.print("DOWN");
   };
   auto handleRIGHT = []() {
@@ -33,8 +26,7 @@ void readButtons() {
     lcd.print("LEFT");
   };
   auto handleSELECT = []() {
-    powered = !powered;
-    cc.setPercent(powered? targetPower : 0);
+    cc.setOuputState(!cc.isOutputEnabled);
     lcd.print("SLT");
   };
 
@@ -53,9 +45,9 @@ void updateLcd() {
   auto data = getCurrentPowerData();
   lcd.clear();
 
-  char state = powered? '=' : ' ';
+  char state = cc.isOutputEnabled? '=' : ' ';
   lcd.print(String(data.outputVoltage, 1) + "/" + String(data.batteryVoltage, 1) + "V ");
-  lcd.print(state + String(targetPower) + "%");
+  lcd.print(state + String(cc.targetPercent) + "%");
 
   lcd.setCursor(0, 1);
   lcd.print(String(data.outputAmps, 2) + "A  " + String(data.outputWatts, 1) + "W ");

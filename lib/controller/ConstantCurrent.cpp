@@ -7,10 +7,14 @@ void ConstantCurrent::init() {
   pinMode(INC_PIN, OUTPUT);
   digitalWrite(INC_PIN, 1);
   pinMode(UP_PIN, OUTPUT);
-  setPercent(0);
+  // assume worst case 100 = full power and reduce it to 0 on startup
+  potiPos = 100;
+  _targetPercent = 0;
+  adjustPotiToTarget();
 }
 
-void ConstantCurrent::setPercent(int target) {
+void ConstantCurrent::adjustPotiToTarget() {
+  auto target = powered? _targetPercent : 0;
   int change = target - potiPos;
 
   digitalWrite(INC_PIN, 1);
@@ -34,4 +38,19 @@ void ConstantCurrent::setPercent(int target) {
   potiPos += change;
 
   digitalWrite(CS_PIN, 1);
+}
+
+void ConstantCurrent::setOuputState(bool on) {
+  powered = on;
+  adjustPotiToTarget();
+}
+
+void ConstantCurrent::changeTargetPercent(int delta) {
+    setTargetPercent(_targetPercent + delta);
+}
+void ConstantCurrent::setTargetPercent(int value) {
+    _targetPercent = value;
+    if (_targetPercent > 100) _targetPercent = 100;
+    if (_targetPercent < 0) _targetPercent = 0;
+    adjustPotiToTarget();
 }

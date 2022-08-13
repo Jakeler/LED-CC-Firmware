@@ -3,9 +3,19 @@
 #define CS_PIN 13
 
 class ConstantCurrent {
-    int potiPos;
+    private:
+        int potiPos;
+        void adjustPotiToTarget();
+        int _targetPercent = 0;
+        bool powered = false;
 
     public:
         void init();
-        void setPercent(int target);
+
+        void changeTargetPercent(int delta);
+        void setTargetPercent(int value);
+        const int& targetPercent = _targetPercent;
+
+        void setOuputState(bool on);
+        const bool& isOutputEnabled = powered;
 };
