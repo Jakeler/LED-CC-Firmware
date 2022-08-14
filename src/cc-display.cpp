@@ -3,49 +3,41 @@
 #include <LiquidCrystal.h>
 #include "Sensors.h"
 #include "ConstantCurrent.h"
-
-#define BTN_PIN A2
-#define BEEP_PIN 10
+#include "ButtonsBeep.h"
 
 LiquidCrystal lcd(5, 4, 9, 8, 7, 6);
 ConstantCurrent cc;
+Beeper beeper;
 
-void readButtons() {
-  auto handleUP = []() {
+class Buttons: public ButtonInterface {
+  void handleUP() {
     cc.changeTargetPercent(+2);
     lcd.print("UP");
   };
-  auto handleDOWN = []() {
+  void handleDOWN() {
     cc.changeTargetPercent(-2);
     lcd.print("DOWN");
   };
-  auto handleRIGHT = []() {
+  void handleRIGHT() {
+    beeper.beep(10, 3);
     lcd.print("RIGHT");
   };
-  auto handleLEFT = []() {
+  void handleLEFT() {
+    beeper.beep(10, 1);
     lcd.print("LEFT");
   };
-  auto handleSELECT = []() {
+  void handleSELECT() {
     cc.setOuputState(!cc.isOutputEnabled);
     lcd.print("SLT");
   };
-
-  uint16_t value = analogRead(BTN_PIN);
-  if (value < 10) handleRIGHT();
-  else if (value < 150) handleUP();
-  else if (value < 300) handleDOWN();
-  else if (value < 500) handleLEFT();
-  else if (value < 700) handleSELECT();
-  else {
-    // no Button
-  }
-}
+};
+Buttons btns;
 
 void updateLcd() {
   auto data = getCurrentPowerData();
   lcd.clear();
 
-  char state = cc.isOutputEnabled? '=' : ' ';
+  auto state = cc.isOutputEnabled? '=' : ' ';
   lcd.print(String(data.outputVoltage, 1) + "/" + String(data.batteryVoltage, 1) + "V ");
   lcd.print(state + String(cc.targetPercent) + "%");
 
@@ -56,10 +48,11 @@ void updateLcd() {
 void setup() {
   lcd.begin(16, 2);
   cc.init();
+  beeper.init();
 }
 
 void loop() {
+  btns.chooseButton();
   updateLcd();
-  readButtons();
   delay(200);
 }
