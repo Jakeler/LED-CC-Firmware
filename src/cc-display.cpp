@@ -7,6 +7,7 @@
 
 LiquidCrystal lcd(5, 4, 9, 8, 7, 6);
 ConstantCurrent cc(INC_PIN, UP_PIN, CS_PIN);
+PowerSensor ps(VIN_PIN, VOUT_PIN, AOUT_PIN);
 Beeper beeper(BEEP_PIN);
 
 class Buttons: public ButtonInterface {
@@ -36,15 +37,15 @@ class Buttons: public ButtonInterface {
 Buttons btns(BTN_PIN);
 
 void updateLcd() {
-  auto data = getCurrentPowerData();
+  ps.readCurrentData();
   lcd.clear();
 
   auto state = cc.isOutputEnabled? '=' : ' ';
-  lcd.print(String(data.outputVoltage, 1) + "/" + String(data.batteryVoltage, 1) + "V ");
+  lcd.print(String(ps.outputVoltage, 1) + "/" + String(ps.batteryVoltage, 1) + "V ");
   lcd.print(state + String(cc.targetPercent) + "%");
 
   lcd.setCursor(0, 1);
-  lcd.print(String(data.outputAmps, 2) + "A  " + String(data.outputWatts, 1) + "W ");
+  lcd.print(String(ps.outputAmps, 2) + "A  " + String(ps.outputWatts, 1) + "W ");
 }
 
 void setup() {

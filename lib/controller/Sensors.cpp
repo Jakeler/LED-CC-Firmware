@@ -1,11 +1,9 @@
 #include <Arduino.h>
 #include "Sensors.h"
 
-powerData getCurrentPowerData() {
-    powerData d;
-    d.batteryVoltage = analogRead(VIN_PIN)/1023.0*VIN_MAX;
-    d.outputVoltage = analogRead(VOUT_PIN)/1023.0*VIN_MAX;
-    d.outputAmps = analogRead(AOUT_PIN)/1023.0*AOUT_MAX;
-    d.outputWatts = d.outputVoltage * d.outputAmps;
-    return d;
+void PowerSensor::readCurrentData() {
+    batteryVoltage = analogRead(inVoltPin_)/1023.0*maxVolt_;
+    outputVoltage = analogRead(outVoltPin_)/1023.0*maxVolt_;
+    outputAmps = analogRead(outAmpPin_)/1023.0*maxAmpOut_;
+    outputWatts = outputVoltage * outputAmps;
 }
