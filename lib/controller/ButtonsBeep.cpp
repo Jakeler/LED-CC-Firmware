@@ -2,7 +2,7 @@
 #include "ButtonsBeep.h"
 
 bool ButtonInterface::chooseButton() {
-    uint16_t value = analogRead(BTN_PIN);
+    uint16_t value = analogRead(pin);
 
     if (value < 10) handleRIGHT();
     else if (value < 150) handleUP();
@@ -17,15 +17,15 @@ bool ButtonInterface::chooseButton() {
 };
 
 void Beeper::init() {
-    digitalWrite(BEEP_PIN, 0);
-    pinMode(BEEP_PIN, OUTPUT);
+    digitalWrite(pin, 0);
+    pinMode(pin, OUTPUT);
 }
 
 void Beeper::beep(int duration, int count) {
   for (int i = 0; i < count; i++) {
-    digitalWrite(BEEP_PIN, 1);
+    digitalWrite(pin, 1);
     delay(duration);
-    digitalWrite(BEEP_PIN, 0);
+    digitalWrite(pin, 0);
     delay(max(duration, 50));
   }
 }

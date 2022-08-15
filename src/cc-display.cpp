@@ -6,10 +6,12 @@
 #include "ButtonsBeep.h"
 
 LiquidCrystal lcd(5, 4, 9, 8, 7, 6);
-ConstantCurrent cc;
-Beeper beeper;
+ConstantCurrent cc(INC_PIN, UP_PIN, CS_PIN);
+Beeper beeper(BEEP_PIN);
 
 class Buttons: public ButtonInterface {
+  using ButtonInterface::ButtonInterface;
+
   void handleUP() {
     cc.changeTargetPercent(+2);
     lcd.print("UP");
@@ -31,7 +33,7 @@ class Buttons: public ButtonInterface {
     lcd.print("SLT");
   };
 };
-Buttons btns;
+Buttons btns(BTN_PIN);
 
 void updateLcd() {
   auto data = getCurrentPowerData();
