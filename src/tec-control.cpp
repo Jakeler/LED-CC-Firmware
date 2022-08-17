@@ -42,14 +42,18 @@ Buttons btns(BTN_PIN);
 
 void updateLcd() {
   ps.readCurrentData();
+  
+  float setpoint = 15.0;
+  bool regulating = true;
+  float temps[] = {sensors.getTempCByIndex(0), sensors.getTempCByIndex(1), setpoint};
   lcd.clear();
-
-  auto state = cc.isOutputEnabled? '=' : ' ';
-  lcd.print(String(ps.outputVoltage, 1) + "/" + String(ps.batteryVoltage, 1) + "V ");
-  lcd.print(state + String(cc.targetPercent) + "%");
+  auto onChar = regulating? '>' : ' ';
+  lcd.print(String(temps[0], 1) + "C" + onChar + String(temps[1], 1) + "/" + String(temps[2], 1) + "C");
 
   lcd.setCursor(0, 1);
-  lcd.print(String(ps.outputAmps, 2) + "A  " + String(ps.outputWatts, 1) + "W " + String(sensors.getDeviceCount()) + " dv");
+  auto stateChar = cc.isOutputEnabled? '=' : ' ';
+  lcd.print(String(ps.outputAmps, 2) + "A" + stateChar + String(cc.targetPercent) + "%");
+  lcd.print(" " + String(ps.outputWatts, 2) + "W");
 }
 
 void setup() {
@@ -57,20 +61,13 @@ void setup() {
   cc.init();
   beeper.init();
 
-  Serial.begin(9600);
   sensors.begin();
   sensors.setResolution(11);
-  Serial.println(sensors.getDeviceCount());
-  Serial.println(sensors.getResolution());
 }
 
 void loop() {
   btns.chooseButton();
+  sensors.requestTemperatures(); // takes 375 ms at 11 bit
   updateLcd();
-  delay(200);
-
-  sensors.requestTemperatures();
-  Serial.println("Sens 1 " + String(sensors.getTempCByIndex(0)));
-  Serial.println("Sens 2 " + String(sensors.getTempCByIndex(1)));
-  
+  // delay(200);
 }
