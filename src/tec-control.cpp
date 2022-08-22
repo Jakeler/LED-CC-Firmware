@@ -75,7 +75,7 @@ void setup() {
   myPID.SetMode(QuickPID::Control::automatic);
 
   #ifdef DEBUG_PID
-    Serial.begin(9600);
+    Serial.begin(250000);
   #endif
 }
 
